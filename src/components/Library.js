@@ -45,7 +45,7 @@ const Card = ({ id, image, title, subtitle }) => (
   <TouchableOpacity
     style={styles.card}
     onPress={() => {
-      Actions.playlist({ id });
+      Actions.playlist({ id, title });
     }}
   >
     <View>

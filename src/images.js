@@ -4,5 +4,10 @@ export default {
   artist3: require("../images/uutsely.png"),
   playlist1: require("../images/jpop.png"),
   playlist2: require("../images/slowrock.png"),
-  playlist3: require("../images/panturanan.png")
+  playlist3: require("../images/panturanan.png"),
+  shuffle: require("../images/shuffle.png"),
+  repeat: require("../images/repeat.png"),
+  favorite: require("../images/favorite.png"),
+  play: require("../images/play.png"),
+  playNext: require("../images/play-next.png")
 };
