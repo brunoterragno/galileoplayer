@@ -15,20 +15,56 @@ import images from "../images";
 
 class Playlist extends Component {
   state = {
-    song: playlist[0]
+    song: playlist[0],
+    songs: playlist
   };
 
   constructor(props = { id, title }) {
     super(props);
   }
 
+  _changeFavoritedState(id) {
+    const songIndex = this.state.songs.findIndex(x => x.id === id);
+    const actualSong = this.state.songs[songIndex];
+    const song = { ...actualSong, favorited: !actualSong.favorited };
+
+    this.setState({
+      song,
+      songs: [
+        ...this.state.songs.map(
+          actualSong => (actualSong.id === song.id ? song : actualSong)
+        )
+      ]
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Player song={this.state.song} />
+        <Player
+          song={this.state.song}
+          onPressFavorite={id => this._changeFavoritedState(id)}
+        />
         <SongList
+          songs={this.state.songs}
           onSelect={id => {
-            this.setState({ song: playlist.find(x => x.id === id) });
+            const songIndex = this.state.songs.findIndex(x => x.id === id);
+            const actualSong = this.state.songs[songIndex];
+
+            if (actualSong.isPlaying) return;
+
+            const song = { ...actualSong, isPlaying: !actualSong.isPlaying };
+            this.setState({
+              song,
+              songs: [
+                ...this.state.songs.map(
+                  actualSong =>
+                    actualSong.id === song.id
+                      ? song
+                      : { ...actualSong, isPlaying: false }
+                )
+              ]
+            });
           }}
         />
       </View>
@@ -36,14 +72,9 @@ class Playlist extends Component {
   }
 }
 
-const Player = ({ song }) => (
+const Player = ({ song, onPressFavorite }) => (
   <View style={styles.playerContainer}>
-    <Card
-      id={song.id}
-      image={song.image}
-      title={song.title}
-      subtitle={song.subtitle}
-    />
+    <Card {...song} onPressFavorite={onPressFavorite} />
     <View style={styles.cardSongStatusBar}>
       <Text style={styles.cardSongStatusBarText}>01:22</Text>
       <View style={styles.cardSongStatusBarProgress}>
@@ -61,33 +92,50 @@ const Player = ({ song }) => (
 );
 
 const _keyExtractor = (item, index) => item.id;
-const SongList = ({ onSelect }) => (
+const SongList = ({ songs, onSelect }) => (
   <View style={styles.songListContainer}>
     <FlatList
-      data={playlist}
+      data={songs}
       keyExtractor={_keyExtractor}
-      renderItem={({ item }) => (
-        <SongListCard
-          id={item.id}
-          image={item.image}
-          title={item.title}
-          subtitle={item.subtitle}
-          duration={item.duration}
-          onSelect={onSelect}
-        />
-      )}
+      renderItem={({ item }) => <SongListCard {...item} onSelect={onSelect} />}
     />
   </View>
 );
 
-const SongListCard = ({ id, image, title, subtitle, duration, onSelect }) => (
+const SongListCard = ({
+  id,
+  image,
+  title,
+  subtitle,
+  duration,
+  isPlaying,
+  onSelect
+}) => (
   <TouchableOpacity
     onPress={() => {
       onSelect(id);
     }}
   >
     <View style={[styles.card, { height: 80 }]}>
-      <Image source={image} style={{ width: 60, height: 60 }} />
+      <Image source={image} style={{ width: 60, height: 60 }}>
+        {isPlaying && (
+          <View
+            style={[
+              styles.cardControlsButton,
+              {
+                backgroundColor: theme.secondaryColor,
+                opacity: 0.88,
+                margin: 10
+              }
+            ]}
+          >
+            <Image
+              source={images.play}
+              style={{ opacity: isPlaying ? 0.81 : 1 }}
+            />
+          </View>
+        )}
+      </Image>
       <View style={styles.cardInfo}>
         <Text style={styles.cardTitle}>{title}</Text>
         <Text style={styles.cardSubtitle}>{subtitle}</Text>
@@ -99,7 +147,7 @@ const SongListCard = ({ id, image, title, subtitle, duration, onSelect }) => (
   </TouchableOpacity>
 );
 
-const Card = ({ id, image, title, subtitle }) => (
+const Card = ({ id, image, title, subtitle, favorited, onPressFavorite }) => (
   <View style={styles.card}>
     <Image source={image} />
     <View style={styles.cardInfo}>
@@ -108,7 +156,10 @@ const Card = ({ id, image, title, subtitle }) => (
       <View style={styles.cardControls}>
         <CardControlButton image={images.shuffle} />
         <CardControlButton image={images.repeat} />
-        <CardControlButton image={images.favorite} />
+        <CardControlButton
+          image={favorited ? images.favorited : images.favorite}
+          onPress={() => onPressFavorite(id)}
+        />
         <CardControlButton image={images.play} accent />
         <CardControlButton image={images.playNext} />
       </View>
@@ -116,8 +167,8 @@ const Card = ({ id, image, title, subtitle }) => (
   </View>
 );
 
-const CardControlButton = ({ image, accent }) => (
-  <TouchableOpacity onPress={() => {}}>
+const CardControlButton = ({ image, accent, onPress }) => (
+  <TouchableOpacity onPress={() => onPress()}>
     <View
       style={[
         styles.cardControlsButton,

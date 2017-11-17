@@ -8,6 +8,7 @@ export default {
   shuffle: require("../images/shuffle.png"),
   repeat: require("../images/repeat.png"),
   favorite: require("../images/favorite.png"),
+  favorited: require("../images/favorited.png"),
   play: require("../images/play.png"),
   playNext: require("../images/play-next.png")
 };
