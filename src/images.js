@@ -9,6 +9,7 @@ export default {
   repeat: require("../images/repeat.png"),
   favorite: require("../images/favorite.png"),
   favorited: require("../images/favorited.png"),
+  pause: require("../images/pause.png"),
   play: require("../images/play.png"),
   playNext: require("../images/play-next.png")
 };

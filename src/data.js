@@ -26,7 +26,9 @@ export const playlist = [
     image: images.artist1,
     duration: "02:35",
     favorited: true,
-    isPlaying: true
+    isPlaying: true,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 2,
@@ -35,7 +37,9 @@ export const playlist = [
     image: images.artist2,
     duration: "03:05",
     favorited: true,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 3,
@@ -44,7 +48,9 @@ export const playlist = [
     image: images.artist3,
     duration: "04:15",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 4,
@@ -53,7 +59,9 @@ export const playlist = [
     image: images.artist1,
     duration: "02:20",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 5,
@@ -62,7 +70,9 @@ export const playlist = [
     image: images.artist2,
     duration: "01:45",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 6,
@@ -71,7 +81,9 @@ export const playlist = [
     image: images.artist3,
     duration: "04:22",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 7,
@@ -80,7 +92,9 @@ export const playlist = [
     image: images.artist1,
     duration: "02:47",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 8,
@@ -89,7 +103,9 @@ export const playlist = [
     image: images.artist2,
     duration: "02:02",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 9,
@@ -98,7 +114,9 @@ export const playlist = [
     image: images.artist3,
     duration: "05:10",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 10,
@@ -107,7 +125,9 @@ export const playlist = [
     image: images.artist1,
     duration: "03:27",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 11,
@@ -116,7 +136,9 @@ export const playlist = [
     image: images.artist2,
     duration: "02:35",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 12,
@@ -125,7 +147,9 @@ export const playlist = [
     image: images.artist3,
     duration: "04:08",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 13,
@@ -134,7 +158,9 @@ export const playlist = [
     image: images.artist1,
     duration: "04:03",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 14,
@@ -143,7 +169,9 @@ export const playlist = [
     image: images.artist2,
     duration: "03:23",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 15,
@@ -152,7 +180,9 @@ export const playlist = [
     image: images.artist3,
     duration: "05:12",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 16,
@@ -161,7 +191,9 @@ export const playlist = [
     image: images.artist1,
     duration: "02:58",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 17,
@@ -170,7 +202,9 @@ export const playlist = [
     image: images.artist2,
     duration: "03:49",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 18,
@@ -179,7 +213,9 @@ export const playlist = [
     image: images.artist3,
     duration: "04:35",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 19,
@@ -188,7 +224,9 @@ export const playlist = [
     image: images.artist2,
     duration: "03:44",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   },
   {
     id: 20,
@@ -197,6 +235,8 @@ export const playlist = [
     image: images.artist3,
     duration: "02:35",
     favorited: false,
-    isPlaying: false
+    isPlaying: false,
+    source:
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
   }
 ];

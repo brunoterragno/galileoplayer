@@ -4584,6 +4584,10 @@ react-native-scripts@1.7.0:
     rimraf "^2.6.1"
     xdl "46.0.1"
 
+react-native-sound@^0.10.4:
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/react-native-sound/-/react-native-sound-0.10.4.tgz#242286558f457e023dbed42e8c6cbe52cfd313d4"
+
 react-native-svg@5.4.2:
   version "5.4.2"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-5.4.2.tgz#a01b4d88cda4b8ef4b2bc1adf05e11ec93a77b79"
