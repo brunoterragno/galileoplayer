@@ -5,7 +5,8 @@ import {
   Button,
   Image,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  processColor
 } from "react-native";
 import { Actions } from "react-native-router-flux";
 import { Bar } from "react-native-progress";
@@ -13,6 +14,7 @@ import { Asset, Audio, Font, Video } from "expo";
 import theme from "../theme";
 import { playlist } from "../data";
 import images from "../images";
+import { millisToMinutesAndSeconds } from "../utils";
 
 class Playlist extends Component {
   constructor(props = { id, title }) {
@@ -71,6 +73,11 @@ class Playlist extends Component {
   };
 
   _onPlaybackStatusUpdate = status => {
+    console.log(
+      "_onPlaybackStatusUpdate",
+      status.positionMillis / 1000 * 0.6,
+      status.durationMillis / 1000 * 0.6
+    );
     if (status.isLoaded) {
       this.setState({
         playbackInstancePosition: status.positionMillis,
@@ -144,6 +151,8 @@ class Playlist extends Component {
         <Player
           song={this.state.song}
           isPlaying={this.state.isPlaying}
+          position={this.state.playbackInstancePosition}
+          duration={this.state.playbackInstanceDuration}
           onPressFavorite={id => this._changeFavoritedState(id)}
           onPressPlayPause={id => this._onPlayPausePressed(id)}
         />
@@ -178,7 +187,23 @@ class Playlist extends Component {
 const LOOPING_TYPE_ALL = 0;
 const LOOPING_TYPE_ONE = 1;
 
-const Player = ({ song, isPlaying, onPressFavorite, onPressPlayPause }) => (
+const calcProgress = (position, duration) => {
+  if (!position || !duration) return 0;
+
+  const totalSeconds = duration / 1000;
+  const passedSeconds = position / 1000;
+  const progress = passedSeconds * 1 / totalSeconds;
+
+  return progress;
+};
+const Player = ({
+  song,
+  isPlaying,
+  duration,
+  position,
+  onPressFavorite,
+  onPressPlayPause
+}) => (
   <View style={styles.playerContainer}>
     <Card
       {...song}
@@ -187,17 +212,21 @@ const Player = ({ song, isPlaying, onPressFavorite, onPressPlayPause }) => (
       onPressPlayPause={onPressPlayPause}
     />
     <View style={styles.cardSongStatusBar}>
-      <Text style={styles.cardSongStatusBarText}>01:22</Text>
+      <Text style={styles.cardSongStatusBarText}>
+        {millisToMinutesAndSeconds(position)}
+      </Text>
       <View style={styles.cardSongStatusBarProgress}>
         <Bar
           width={null}
-          progress={0.5}
+          progress={calcProgress(position, duration)}
           color={theme.secondaryColor}
           borderColor={theme.primaryColor}
           unfilledColor={theme.tertiaryColor}
         />
       </View>
-      <Text style={styles.cardSongStatusBarText}>{song.duration}</Text>
+      <Text style={styles.cardSongStatusBarText}>
+        {millisToMinutesAndSeconds(duration)}
+      </Text>
     </View>
   </View>
 );
