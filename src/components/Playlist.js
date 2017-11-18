@@ -6,7 +6,8 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  processColor
+  processColor,
+  ActivityIndicator
 } from "react-native";
 import { Actions } from "react-native-router-flux";
 import { Bar } from "react-native-progress";
@@ -68,6 +69,7 @@ class Playlist extends Component {
   _onSongPressed = () => {
     console.log("_onSongPressed");
     if (this.playbackInstance != null) {
+      this.setState({ isLoading: true });
       this._loadNewPlaybackInstance(this.state.shouldPlay);
     }
   };
@@ -89,7 +91,8 @@ class Playlist extends Component {
         muted: status.isMuted,
         volume: status.volume,
         loopingType: status.isLooping ? LOOPING_TYPE_ONE : LOOPING_TYPE_ALL,
-        shouldCorrectPitch: status.shouldCorrectPitch
+        shouldCorrectPitch: status.shouldCorrectPitch,
+        isLoading: status.positionMillis <= 0
       });
       if (status.didJustFinish && !status.isLooping) {
         this._advanceIndex(true);
@@ -120,7 +123,8 @@ class Playlist extends Component {
       shouldCorrectPitch: this.state.shouldCorrectPitch,
       volume: this.state.volume,
       isMuted: this.state.muted,
-      isLooping: false
+      isLooping: false,
+      isLoading: true
     };
 
     const { sound, status } = await Audio.Sound.create(
@@ -151,6 +155,7 @@ class Playlist extends Component {
         <Player
           song={this.state.song}
           isPlaying={this.state.isPlaying}
+          isLoading={this.state.isLoading}
           position={this.state.playbackInstancePosition}
           duration={this.state.playbackInstanceDuration}
           onPressFavorite={id => this._changeFavoritedState(id)}
@@ -199,6 +204,7 @@ const calcProgress = (position, duration) => {
 const Player = ({
   song,
   isPlaying,
+  isLoading,
   duration,
   position,
   onPressFavorite,
@@ -208,6 +214,7 @@ const Player = ({
     <Card
       {...song}
       isPlaying={isPlaying}
+      isLoading={isLoading}
       onPressFavorite={onPressFavorite}
       onPressPlayPause={onPressPlayPause}
     />
@@ -294,6 +301,7 @@ const Card = ({
   subtitle,
   favorited,
   isPlaying,
+  isLoading,
   onPressFavorite,
   onPressPlayPause
 }) => (
@@ -303,18 +311,22 @@ const Card = ({
       <Text style={styles.cardTitle}>{title}</Text>
       <Text style={styles.cardSubtitle}>{subtitle}</Text>
       <View style={styles.cardControls}>
-        <CardControlButton image={images.shuffle} />
-        <CardControlButton image={images.repeat} />
+        <CardControlButton image={images.shuffle} onPress={() => {}} />
+        <CardControlButton image={images.repeat} onPress={() => {}} />
         <CardControlButton
           image={favorited ? images.favorited : images.favorite}
           onPress={() => onPressFavorite(id)}
         />
-        <CardControlButton
-          accent
-          image={isPlaying ? images.pause : images.play}
-          onPress={() => onPressPlayPause(id)}
-        />
-        <CardControlButton image={images.playNext} />
+        {isLoading ? (
+          <ActivityIndicator color={theme.secondaryColor} size={"large"} />
+        ) : (
+          <CardControlButton
+            accent
+            image={isPlaying ? images.pause : images.play}
+            onPress={() => onPressPlayPause(id)}
+          />
+        )}
+        <CardControlButton image={images.playNext} onPress={() => {}} />
       </View>
     </View>
   </View>
