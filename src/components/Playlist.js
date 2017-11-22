@@ -15,7 +15,7 @@ import { Asset, Audio, Font, Video } from "expo";
 import theme from "../theme";
 import { playlist } from "../data";
 import images from "../images";
-import { millisToMinutesAndSeconds } from "../utils";
+import { millisToMinutesAndSeconds, keyExtractor } from "../utils";
 
 class Playlist extends Component {
   constructor(props = { id, title }) {
@@ -53,13 +53,10 @@ class Playlist extends Component {
   }
 
   _onPlayPausePressed = id => {
-    console.log("_onPlayPausePressed", id);
     if (this.playbackInstance != null) {
       if (this.state.isPlaying) {
-        console.log("_onPlayPausePressed is paused");
         this.playbackInstance.pauseAsync();
       } else {
-        console.log("_onPlayPausePressed is playing");
         this.playbackInstance.playAsync();
       }
       this.setState({ isPlaying: !this.state.isPlaying });
@@ -67,7 +64,6 @@ class Playlist extends Component {
   };
 
   _onSongPressed = () => {
-    console.log("_onSongPressed");
     if (this.playbackInstance != null) {
       this.setState({ isLoading: true });
       this._loadNewPlaybackInstance(this.state.shouldPlay);
@@ -75,11 +71,6 @@ class Playlist extends Component {
   };
 
   _onPlaybackStatusUpdate = status => {
-    console.log(
-      "_onPlaybackStatusUpdate",
-      status.positionMillis / 1000 * 0.6,
-      status.durationMillis / 1000 * 0.6
-    );
     if (status.isLoaded) {
       this.setState({
         playbackInstancePosition: status.positionMillis,
@@ -115,7 +106,6 @@ class Playlist extends Component {
       this.playbackInstance.setOnPlaybackStatusUpdate(null);
       this.playbackInstance = null;
     }
-    console.log("_loadNewPlaybackInstance", this.state.song);
     const source = { uri: this.state.song.source };
     const initialStatus = {
       shouldPlay: playing,
@@ -145,7 +135,6 @@ class Playlist extends Component {
       shouldDuckAndroid: true,
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
     });
-    console.log(this.state.song);
     this._loadNewPlaybackInstance(false);
   }
 
@@ -238,12 +227,11 @@ const Player = ({
   </View>
 );
 
-const _keyExtractor = (item, index) => item.id;
 const SongList = ({ songs, onSelect }) => (
   <View style={styles.songListContainer}>
     <FlatList
       data={songs}
-      keyExtractor={_keyExtractor}
+      keyExtractor={keyExtractor}
       renderItem={({ item }) => <SongListCard {...item} onSelect={onSelect} />}
     />
   </View>

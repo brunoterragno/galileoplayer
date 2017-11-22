@@ -10,8 +10,7 @@ import {
 import { Actions } from "react-native-router-flux";
 import theme from "../theme";
 import { popularList, myPlaylist } from "../data";
-
-const _keyExtractor = (item, index) => item.id;
+import { keyExtractor } from "../utils";
 
 const Library = () => (
   <View style={styles.container}>
@@ -28,7 +27,7 @@ const Section = ({ title, source }) => (
       horizontal
       style={styles.cardsContainer}
       data={source}
-      keyExtractor={_keyExtractor}
+      keyExtractor={keyExtractor}
       renderItem={({ item }) => (
         <Card
           id={item.id}
