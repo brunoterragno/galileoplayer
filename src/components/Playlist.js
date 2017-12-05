@@ -16,11 +16,15 @@ import theme from "../theme";
 import { playlist } from "../data";
 import images from "../images";
 import { millisToMinutesAndSeconds, keyExtractor } from "../utils";
+import Player from "../components/Player";
+import SongList from "../components/SongList";
+
+const LOOPING_TYPE_ALL = 0;
+const LOOPING_TYPE_ONE = 1;
 
 class Playlist extends Component {
   constructor(props = { id, title }) {
     super(props);
-    this.playbackInstance = null;
     this.state = {
       song: playlist[0],
       songs: playlist,
@@ -35,6 +39,12 @@ class Playlist extends Component {
       loopingType: LOOPING_TYPE_ALL,
       shouldCorrectPitch: true
     };
+  }
+
+  componentWillUnmount() {
+    if (this.playbackInstance != null) {
+      this.playbackInstance.stopAsync();
+    }
   }
 
   _changeFavoritedState(id) {
@@ -100,9 +110,9 @@ class Playlist extends Component {
     console.log("_advanceIndex", forward);
   }
 
-  async _loadNewPlaybackInstance(playing) {
-    if (this.playbackInstance != null) {
-      await this.playbackInstance.unloadAsync();
+  _loadNewPlaybackInstance(playing) {
+    if (this.playbackInstance) {
+      this.playbackInstance.unloadAsync();
       this.playbackInstance.setOnPlaybackStatusUpdate(null);
       this.playbackInstance = null;
     }
@@ -117,14 +127,14 @@ class Playlist extends Component {
       isLoading: true
     };
 
-    const { sound, status } = await Audio.Sound.create(
+    Audio.Sound.create(
       source,
       initialStatus,
       this._onPlaybackStatusUpdate
-    );
-
-    this.playbackInstance = sound;
-    this.playbackInstance.playAsync();
+    ).then(({ sound, status }) => {
+      this.playbackInstance = sound;
+      this.playbackInstance.playAsync();
+    });
   }
 
   componentDidMount() {
@@ -135,7 +145,7 @@ class Playlist extends Component {
       shouldDuckAndroid: true,
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
     });
-    this._loadNewPlaybackInstance(false);
+    this._loadNewPlaybackInstance(true);
   }
 
   render() {
@@ -178,220 +188,9 @@ class Playlist extends Component {
   }
 }
 
-const LOOPING_TYPE_ALL = 0;
-const LOOPING_TYPE_ONE = 1;
-
-const calcProgress = (position, duration) => {
-  if (!position || !duration) return 0;
-
-  const totalSeconds = duration / 1000;
-  const passedSeconds = position / 1000;
-  const progress = passedSeconds * 1 / totalSeconds;
-
-  return progress;
-};
-const Player = ({
-  song,
-  isPlaying,
-  isLoading,
-  duration,
-  position,
-  onPressFavorite,
-  onPressPlayPause
-}) => (
-  <View style={styles.playerContainer}>
-    <Card
-      {...song}
-      isPlaying={isPlaying}
-      isLoading={isLoading}
-      onPressFavorite={onPressFavorite}
-      onPressPlayPause={onPressPlayPause}
-    />
-    <View style={styles.cardSongStatusBar}>
-      <Text style={styles.cardSongStatusBarText}>
-        {millisToMinutesAndSeconds(position)}
-      </Text>
-      <View style={styles.cardSongStatusBarProgress}>
-        <Bar
-          width={null}
-          progress={calcProgress(position, duration)}
-          color={theme.secondaryColor}
-          borderColor={theme.primaryColor}
-          unfilledColor={theme.tertiaryColor}
-        />
-      </View>
-      <Text style={styles.cardSongStatusBarText}>
-        {millisToMinutesAndSeconds(duration)}
-      </Text>
-    </View>
-  </View>
-);
-
-const SongList = ({ songs, onSelect }) => (
-  <View style={styles.songListContainer}>
-    <FlatList
-      data={songs}
-      keyExtractor={keyExtractor}
-      renderItem={({ item }) => <SongListCard {...item} onSelect={onSelect} />}
-    />
-  </View>
-);
-
-const SongListCard = ({
-  id,
-  image,
-  title,
-  subtitle,
-  duration,
-  isPlaying,
-  onSelect
-}) => (
-  <TouchableOpacity
-    onPress={() => {
-      onSelect(id);
-    }}
-  >
-    <View style={[styles.card, { height: 80 }]}>
-      <Image source={image} style={{ width: 60, height: 60 }}>
-        {isPlaying && (
-          <View
-            style={[
-              styles.cardControlsButton,
-              {
-                backgroundColor: theme.secondaryColor,
-                opacity: 0.88,
-                margin: 10
-              }
-            ]}
-          >
-            <Image
-              source={images.play}
-              style={{ opacity: isPlaying ? 0.81 : 1 }}
-            />
-          </View>
-        )}
-      </Image>
-      <View style={styles.cardInfo}>
-        <Text style={styles.cardTitle}>{title}</Text>
-        <Text style={styles.cardSubtitle}>{subtitle}</Text>
-      </View>
-      <View style={{ justifyContent: "center" }}>
-        <Text style={styles.cardSubtitle}>{duration}</Text>
-      </View>
-    </View>
-  </TouchableOpacity>
-);
-
-const Card = ({
-  id,
-  image,
-  title,
-  subtitle,
-  favorited,
-  isPlaying,
-  isLoading,
-  onPressFavorite,
-  onPressPlayPause
-}) => (
-  <View style={styles.card}>
-    <Image source={image} />
-    <View style={styles.cardInfo}>
-      <Text style={styles.cardTitle}>{title}</Text>
-      <Text style={styles.cardSubtitle}>{subtitle}</Text>
-      <View style={styles.cardControls}>
-        <CardControlButton image={images.shuffle} onPress={() => {}} />
-        <CardControlButton image={images.repeat} onPress={() => {}} />
-        <CardControlButton
-          image={favorited ? images.favorited : images.favorite}
-          onPress={() => onPressFavorite(id)}
-        />
-        {isLoading ? (
-          <ActivityIndicator color={theme.secondaryColor} size={"large"} />
-        ) : (
-          <CardControlButton
-            accent
-            image={isPlaying ? images.pause : images.play}
-            onPress={() => onPressPlayPause(id)}
-          />
-        )}
-        <CardControlButton image={images.playNext} onPress={() => {}} />
-      </View>
-    </View>
-  </View>
-);
-
-const CardControlButton = ({ image, accent, onPress }) => (
-  <TouchableOpacity onPress={() => onPress()}>
-    <View
-      style={[
-        styles.cardControlsButton,
-        { backgroundColor: accent ? theme.secondaryColor : theme.primaryColor }
-      ]}
-    >
-      <Image source={image} />
-    </View>
-  </TouchableOpacity>
-);
-
 const styles = {
   container: {
     flex: 1
-  },
-  playerContainer: {
-    flex: 1,
-    justifyContent: "space-around",
-    backgroundColor: theme.primaryColor
-  },
-  songListContainer: {
-    flex: 3,
-    justifyContent: "space-around",
-    backgroundColor: theme.primaryColor
-  },
-  card: {
-    flex: 3,
-    flexDirection: "row",
-    padding: 10
-  },
-  cardInfo: {
-    flex: 1,
-    margin: 10,
-    marginRight: 0
-  },
-  cardControls: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  cardControlsButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  cardSongStatusBar: {
-    flex: 1,
-    marginLeft: 10,
-    marginRight: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-  cardSongStatusBarText: {
-    color: theme.secondaryTextColor
-  },
-  cardSongStatusBarProgress: {
-    flex: 1,
-    margin: 10
-  },
-  cardTitle: {
-    color: theme.primaryTextColor,
-    fontSize: 18
-  },
-  cardSubtitle: {
-    color: theme.secondaryTextColor,
-    fontSize: 14
   }
 };
 

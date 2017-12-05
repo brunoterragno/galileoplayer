@@ -39,7 +39,7 @@ export const playlist = [
     favorited: true,
     isPlaying: false,
     source:
-      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
+      "https://ia800304.us.archive.org/34/items/PaulWhitemanwithMildredBailey/PaulWhitemanwithMildredBailey-AllofMe.mp3"
   },
   {
     id: 3,
@@ -50,7 +50,7 @@ export const playlist = [
     favorited: false,
     isPlaying: false,
     source:
-      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
+      "https://ia800501.us.archive.org/11/items/popeye_i_dont_scare/popeye_i_dont_scare_512kb.mp4"
   },
   {
     id: 4,
@@ -61,7 +61,7 @@ export const playlist = [
     favorited: false,
     isPlaying: false,
     source:
-      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Podington_Bear_-_Rubber_Robot.mp3"
   },
   {
     id: 5,
@@ -105,7 +105,7 @@ export const playlist = [
     favorited: false,
     isPlaying: false,
     source:
-      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Podington_Bear_-_Rubber_Robot.mp3"
   },
   {
     id: 9,
@@ -127,7 +127,7 @@ export const playlist = [
     favorited: false,
     isPlaying: false,
     source:
-      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Podington_Bear_-_Rubber_Robot.mp3"
   },
   {
     id: 11,
@@ -182,7 +182,7 @@ export const playlist = [
     favorited: false,
     isPlaying: false,
     source:
-      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
+      "https://ia800304.us.archive.org/34/items/PaulWhitemanwithMildredBailey/PaulWhitemanwithMildredBailey-AllofMe.mp3"
   },
   {
     id: 16,
@@ -204,7 +204,7 @@ export const playlist = [
     favorited: false,
     isPlaying: false,
     source:
-      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
+      "https://ia800304.us.archive.org/34/items/PaulWhitemanwithMildredBailey/PaulWhitemanwithMildredBailey-AllofMe.mp3"
   },
   {
     id: 18,
@@ -226,7 +226,7 @@ export const playlist = [
     favorited: false,
     isPlaying: false,
     source:
-      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Comfort_Fit_-_03_-_Sorry.mp3"
+      "https://s3.amazonaws.com/exp-us-standard/audio/playlist-example/Podington_Bear_-_Rubber_Robot.mp3"
   },
   {
     id: 20,
