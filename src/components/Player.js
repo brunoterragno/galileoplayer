@@ -22,7 +22,8 @@ const Player = ({
   duration,
   position,
   onPressFavorite,
-  onPressPlayPause
+  onPressPlayPause,
+  onPressNext
 }) => (
   <View style={styles.playerContainer}>
     <Card
@@ -31,6 +32,7 @@ const Player = ({
       isLoading={isLoading}
       onPressFavorite={onPressFavorite}
       onPressPlayPause={onPressPlayPause}
+      onPressNext={onPressNext}
     />
     <View style={styles.cardSongStatusBar}>
       <Text style={styles.cardSongStatusBarText}>

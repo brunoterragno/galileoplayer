@@ -16,7 +16,7 @@ const Library = () => (
   <View style={styles.container}>
     <Section title="POPULAR" source={popularList} />
     <Section title="MY PLAYLIST" source={myPlaylist} />
-    <Section title="NEW RELEASES" source={myPlaylist} />
+    <Section title="NEW RELEASES" source={[].concat(popularList).reverse()} />
   </View>
 );
 

@@ -19,7 +19,8 @@ const Card = ({
   isPlaying,
   isLoading,
   onPressFavorite,
-  onPressPlayPause
+  onPressPlayPause,
+  onPressNext
 }) => (
   <View style={styles.card}>
     <Image source={image} />
@@ -42,7 +43,10 @@ const Card = ({
             onPress={() => onPressPlayPause(id)}
           />
         )}
-        <CardControlButton image={images.playNext} onPress={() => {}} />
+        <CardControlButton
+          image={images.playNext}
+          onPress={() => onPressNext(id)}
+        />
       </View>
     </View>
   </View>

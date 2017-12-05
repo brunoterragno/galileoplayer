@@ -95,7 +95,15 @@ class Playlist extends Component {
   };
 
   _advanceIndex(forward) {
-    console.log("_advanceIndex", forward);
+    if (forward && this.state.song) {
+      const songIndex = this.state.songs.findIndex(
+        x => x.id === this.state.song.id
+      );
+
+      const nextSong = this.state.songs[songIndex + 1];
+
+      if (nextSong) this._selectSong(nextSong.id);
+    }
   }
 
   _loadNewPlaybackInstance(playing) {
@@ -168,6 +176,7 @@ class Playlist extends Component {
           duration={this.state.playbackInstanceDuration}
           onPressFavorite={id => this._changeFavoritedState(id)}
           onPressPlayPause={id => this._onPlayPausePressed(id)}
+          onPressNext={id => this._advanceIndex(id)}
         />
         <SongList
           songs={this.state.songs}
