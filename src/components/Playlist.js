@@ -1,21 +1,9 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  Button,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  processColor,
-  ActivityIndicator
-} from "react-native";
+import { View } from "react-native";
 import { Actions } from "react-native-router-flux";
-import { Bar } from "react-native-progress";
 import { Asset, Audio, Font, Video } from "expo";
 import theme from "../theme";
 import { playlist } from "../data";
-import images from "../images";
-import { millisToMinutesAndSeconds, keyExtractor } from "../utils";
 import Player from "../components/Player";
 import SongList from "../components/SongList";
 
@@ -137,6 +125,27 @@ class Playlist extends Component {
     });
   }
 
+  _selectSong(id) {
+    const songIndex = this.state.songs.findIndex(x => x.id === id);
+    const actualSong = this.state.songs[songIndex];
+
+    if (actualSong.isPlaying) return;
+
+    this._onSongPressed();
+    const song = { ...actualSong, isPlaying: !actualSong.isPlaying };
+    this.setState({
+      song,
+      songs: [
+        ...this.state.songs.map(
+          actualSong =>
+            actualSong.id === song.id
+              ? song
+              : { ...actualSong, isPlaying: false }
+        )
+      ]
+    });
+  }
+
   componentDidMount() {
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
@@ -162,26 +171,7 @@ class Playlist extends Component {
         />
         <SongList
           songs={this.state.songs}
-          onSelect={id => {
-            const songIndex = this.state.songs.findIndex(x => x.id === id);
-            const actualSong = this.state.songs[songIndex];
-
-            if (actualSong.isPlaying) return;
-
-            this._onSongPressed();
-            const song = { ...actualSong, isPlaying: !actualSong.isPlaying };
-            this.setState({
-              song,
-              songs: [
-                ...this.state.songs.map(
-                  actualSong =>
-                    actualSong.id === song.id
-                      ? song
-                      : { ...actualSong, isPlaying: false }
-                )
-              ]
-            });
-          }}
+          onSelect={id => this._selectSong(id)}
         />
       </View>
     );
