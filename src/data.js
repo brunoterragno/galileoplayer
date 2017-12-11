@@ -1,6 +1,6 @@
 import images from "./images";
 
-export const popularList = [
+export const popularPlaylists = [
   { id: 7, title: "J-Pop", subtitle: "20 Songs", image: images.playlist1 },
   { id: 8, title: "Rock'90", subtitle: "32 Songs", image: images.playlist2 },
   { id: 9, title: "Panturanan", subtitle: "16 Songs", image: images.playlist3 },
@@ -18,7 +18,7 @@ export const myPlaylist = [
   { id: 6, title: "Uut Selyy", subtitle: "Kopi Susu", image: images.artist3 }
 ];
 
-export const playlist = [
+export const songs = [
   {
     id: 1,
     title: "Radwimps",
