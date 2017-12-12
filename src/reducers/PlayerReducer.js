@@ -3,10 +3,9 @@ import {
   FAVOURITE_PLAYLIST_SONG,
   UNFAVOURITE_PLAYLIST_SONG,
   SHUFFLE_PLAYLIST_SONGS
-} from "../actions/types";
+} from '../actions/types'
 
-const LOOPING_TYPE_ALL = 0;
-const LOOPING_TYPE_ONE = 1;
+const LOOPING_TYPE_ALL = 0
 
 const INITIAL_STATE = {
   song: null,
@@ -21,23 +20,23 @@ const INITIAL_STATE = {
   rate: 1.0,
   loopingType: LOOPING_TYPE_ALL,
   shouldCorrectPitch: true
-};
+}
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case NEXT_PLAYLIST_SONG: {
-      return state;
+      return state
     }
     case FAVOURITE_PLAYLIST_SONG: {
-      return state;
+      return state
     }
     case UNFAVOURITE_PLAYLIST_SONG: {
-      return state;
+      return state
     }
     case SHUFFLE_PLAYLIST_SONGS: {
-      return state;
+      return state
     }
     default:
-      return state;
+      return state
   }
-};
+}

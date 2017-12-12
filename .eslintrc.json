@@ -1,13 +1,17 @@
 {
-  "extends": "standard",
-  "plugins": ["react-native", "prettier"],
+  "extends": ["standard", "eslint:recommended", "plugin:react/recommended"],
+  "plugins": ["react", "react-native", "prettier"],
   "rules": {
     "react-native/no-unused-styles": 2,
     "react-native/split-platform-components": 2,
-    "prettier/prettier": [
-      "error",
-      { "singleQuote": true, "semi": false, "trailingComma": "es5" }
-    ],
-    "semi": ["error", "never"]
+    "space-before-function-paren": "off",
+    "prettier/prettier": ["error", { "singleQuote": true, "semi": false }],
+    "semi": ["error", "never"],
+    "no-unused-vars": 1
+  },
+  "globals": {
+    "it": true,
+    "expect": true,
+    "dispatch": true
   }
 }

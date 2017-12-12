@@ -1,19 +1,20 @@
-import React, { Component } from "react";
-import { View, Text } from "react-native";
-import { Bar } from "react-native-progress";
-import theme from "../theme";
-import { millisToMinutesAndSeconds } from "../utils";
-import Card from "../components/Card";
+import React from 'react'
+import { View, Text } from 'react-native'
+import { Bar } from 'react-native-progress'
+import PropTypes from 'prop-types'
+import theme from '../theme'
+import { millisToMinutesAndSeconds } from '../utils'
+import Card from '../components/Card'
 
 const calcProgress = (position, duration) => {
-  if (!position || !duration) return 0;
+  if (!position || !duration) return 0
 
-  const totalSeconds = duration / 1000;
-  const passedSeconds = position / 1000;
-  const progress = passedSeconds * 1 / totalSeconds;
+  const totalSeconds = duration / 1000
+  const passedSeconds = position / 1000
+  const progress = passedSeconds * 1 / totalSeconds
 
-  return progress;
-};
+  return progress
+}
 
 const Player = ({
   song,
@@ -52,21 +53,32 @@ const Player = ({
       </Text>
     </View>
   </View>
-);
+)
+
+Player.propTypes = {
+  song: PropTypes.object,
+  isPlaying: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  duration: PropTypes.string,
+  position: PropTypes.number,
+  onPressFavorite: PropTypes.func,
+  onPressPlayPause: PropTypes.func,
+  onPressNext: PropTypes.func
+}
 
 const styles = {
   playerContainer: {
     flex: 1,
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     backgroundColor: theme.primaryColor
   },
   cardSongStatusBar: {
     flex: 1,
     marginLeft: 10,
     marginRight: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   cardSongStatusBarText: {
     color: theme.secondaryTextColor
@@ -75,6 +87,6 @@ const styles = {
     flex: 1,
     margin: 10
   }
-};
+}
 
-export default Player;
+export default Player

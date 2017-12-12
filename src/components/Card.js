@@ -1,14 +1,14 @@
-import React, { Component } from "react";
+import React from 'react'
 import {
   View,
   Text,
-  Button,
   Image,
   TouchableOpacity,
   ActivityIndicator
-} from "react-native";
-import theme from "../theme";
-import images from "../images";
+} from 'react-native'
+import theme from '../theme'
+import images from '../images'
+import PropTypes from 'prop-types'
 
 const Card = ({
   id,
@@ -35,7 +35,7 @@ const Card = ({
           onPress={() => onPressFavorite(id)}
         />
         {isLoading ? (
-          <ActivityIndicator color={theme.secondaryColor} size={"large"} />
+          <ActivityIndicator color={theme.secondaryColor} size={'large'} />
         ) : (
           <CardControlButton
             accent
@@ -50,7 +50,20 @@ const Card = ({
       </View>
     </View>
   </View>
-);
+)
+
+Card.propTypes = {
+  id: PropTypes.number,
+  image: PropTypes.object,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  favorited: PropTypes.bool,
+  isPlaying: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  onPressFavorite: PropTypes.func,
+  onPressPlayPause: PropTypes.func,
+  onPressNext: PropTypes.func
+}
 
 const CardControlButton = ({ image, accent, onPress }) => (
   <TouchableOpacity onPress={() => onPress()}>
@@ -63,12 +76,18 @@ const CardControlButton = ({ image, accent, onPress }) => (
       <Image source={image} />
     </View>
   </TouchableOpacity>
-);
+)
+
+CardControlButton.propTypes = {
+  image: PropTypes.object,
+  accent: PropTypes.bool,
+  onPress: PropTypes.func
+}
 
 const styles = {
   card: {
     flex: 3,
-    flexDirection: "row",
+    flexDirection: 'row',
     padding: 10
   },
   cardInfo: {
@@ -78,16 +97,16 @@ const styles = {
   },
   cardControls: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   cardControlsButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   cardTitle: {
     color: theme.primaryTextColor,
@@ -97,6 +116,6 @@ const styles = {
     color: theme.secondaryTextColor,
     fontSize: 14
   }
-};
+}
 
-export default Card;
+export default Card

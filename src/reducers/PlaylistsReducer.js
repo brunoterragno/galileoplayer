@@ -3,28 +3,28 @@ import {
   PLAYLISTS_FETCH_SUCCESS,
   PLAYLISTS_FETCH_FAIL,
   SELECT_PLAYLIST
-} from "../actions/types";
+} from '../actions/types'
 
 const INITIAL_STATE = {
   popularList: [],
   myPlaylist: []
-};
+}
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case PLAYLISTS_FETCH: {
-      return state;
+      return state
     }
     case PLAYLISTS_FETCH_SUCCESS: {
-      return state;
+      return state
     }
     case PLAYLISTS_FETCH_FAIL: {
-      return state;
+      return state
     }
     case SELECT_PLAYLIST: {
-      return state;
+      return state
     }
     default:
-      return state;
+      return state
   }
-};
+}

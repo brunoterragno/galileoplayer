@@ -1,16 +1,10 @@
-import React from "react";
-import {
-  View,
-  Text,
-  Button,
-  Image,
-  FlatList,
-  TouchableOpacity
-} from "react-native";
-import { Actions } from "react-native-router-flux";
-import theme from "../theme";
-import { popularList, myPlaylist } from "../data";
-import { keyExtractor } from "../utils";
+import React from 'react'
+import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native'
+import { Actions } from 'react-native-router-flux'
+import PropTypes from 'prop-types'
+import theme from '../theme'
+import { popularList, myPlaylist } from '../data'
+import { keyExtractor } from '../utils'
 
 const Library = () => (
   <View style={styles.container}>
@@ -18,7 +12,7 @@ const Library = () => (
     <Section title="MY PLAYLIST" source={myPlaylist} />
     <Section title="NEW RELEASES" source={[].concat(popularList).reverse()} />
   </View>
-);
+)
 
 const Section = ({ title, source }) => (
   <View style={styles.sectionContainer}>
@@ -38,13 +32,18 @@ const Section = ({ title, source }) => (
       )}
     />
   </View>
-);
+)
+
+Section.propTypes = {
+  title: PropTypes.string,
+  source: PropTypes.string
+}
 
 const Card = ({ id, image, title, subtitle }) => (
   <TouchableOpacity
     style={styles.card}
     onPress={() => {
-      Actions.playlist({ id, title });
+      Actions.playlist({ id, title })
     }}
   >
     <View>
@@ -53,16 +52,23 @@ const Card = ({ id, image, title, subtitle }) => (
       <Text style={styles.cardSubtitle}>{subtitle}</Text>
     </View>
   </TouchableOpacity>
-);
+)
+
+Card.propTypes = {
+  id: PropTypes.number,
+  image: PropTypes.object,
+  title: PropTypes.string,
+  subtitle: PropTypes.string
+}
 
 const styles = {
   container: {
     flex: 1,
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     backgroundColor: theme.primaryColor
   },
   sectionContainer: {
-    height: "40%",
+    height: '40%',
     flex: 1
   },
   sectionTitle: {
@@ -72,11 +78,11 @@ const styles = {
     marginTop: 20
   },
   cardsContainer: {
-    flexDirection: "row"
+    flexDirection: 'row'
   },
   card: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     padding: 10
   },
   cardTitle: {
@@ -86,6 +92,6 @@ const styles = {
   cardSubtitle: {
     color: theme.secondaryTextColor
   }
-};
+}
 
-export default Library;
+export default Library

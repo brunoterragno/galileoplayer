@@ -1,18 +1,16 @@
-import React, { Component } from "react";
-import { View } from "react-native";
-import { Actions } from "react-native-router-flux";
-import { Asset, Audio, Font, Video } from "expo";
-import theme from "../theme";
-import { playlist } from "../data";
-import Player from "../components/Player";
-import SongList from "../components/SongList";
+import React, { Component } from 'react'
+import { View } from 'react-native'
+import { Audio } from 'expo'
+import { playlist } from '../data'
+import Player from '../components/Player'
+import SongList from '../components/SongList'
 
-const LOOPING_TYPE_ALL = 0;
-const LOOPING_TYPE_ONE = 1;
+const LOOPING_TYPE_ALL = 0
+const LOOPING_TYPE_ONE = 1
 
 class Playlist extends Component {
-  constructor(props = { id, title }) {
-    super(props);
+  constructor(props) {
+    super(props)
     this.state = {
       song: playlist[0],
       songs: playlist,
@@ -26,19 +24,19 @@ class Playlist extends Component {
       rate: 1.0,
       loopingType: LOOPING_TYPE_ALL,
       shouldCorrectPitch: true
-    };
+    }
   }
 
   componentWillUnmount() {
     if (this.playbackInstance != null) {
-      this.playbackInstance.stopAsync();
+      this.playbackInstance.stopAsync()
     }
   }
 
   _changeFavoritedState(id) {
-    const songIndex = this.state.songs.findIndex(x => x.id === id);
-    const actualSong = this.state.songs[songIndex];
-    const song = { ...actualSong, favorited: !actualSong.favorited };
+    const songIndex = this.state.songs.findIndex(x => x.id === id)
+    const actualSong = this.state.songs[songIndex]
+    const song = { ...actualSong, favorited: !actualSong.favorited }
 
     this.setState({
       song,
@@ -47,28 +45,28 @@ class Playlist extends Component {
           actualSong => (actualSong.id === song.id ? song : actualSong)
         )
       ]
-    });
+    })
   }
 
-  _onPlayPausePressed = id => {
+  _onPlayPausePressed(id) {
     if (this.playbackInstance != null) {
       if (this.state.isPlaying) {
-        this.playbackInstance.pauseAsync();
+        this.playbackInstance.pauseAsync()
       } else {
-        this.playbackInstance.playAsync();
+        this.playbackInstance.playAsync()
       }
-      this.setState({ isPlaying: !this.state.isPlaying });
+      this.setState({ isPlaying: !this.state.isPlaying })
     }
-  };
+  }
 
-  _onSongPressed = () => {
+  _onSongPressed() {
     if (this.playbackInstance != null) {
-      this.setState({ isLoading: true });
-      this._loadNewPlaybackInstance(this.state.shouldPlay);
+      this.setState({ isLoading: true })
+      this._loadNewPlaybackInstance(this.state.shouldPlay)
     }
-  };
+  }
 
-  _onPlaybackStatusUpdate = status => {
+  _onPlaybackStatusUpdate(status) {
     if (status.isLoaded) {
       this.setState({
         playbackInstancePosition: status.positionMillis,
@@ -82,37 +80,38 @@ class Playlist extends Component {
         loopingType: status.isLooping ? LOOPING_TYPE_ONE : LOOPING_TYPE_ALL,
         shouldCorrectPitch: status.shouldCorrectPitch,
         isLoading: status.positionMillis <= 0
-      });
+      })
       if (status.didJustFinish && !status.isLooping) {
-        this._advanceIndex(true);
-        this._updatePlaybackInstanceForIndex(true);
+        this._advanceIndex(true)
+        this._updatePlaybackInstanceForIndex(true)
       }
     } else {
       if (status.error) {
-        console.log(`FATAL PLAYER ERROR: ${status.error}`);
+        /* eslint-disable */
+        console.log(`FATAL PLAYER ERROR: ${status.error}`)
       }
     }
-  };
+  }
 
   _advanceIndex(forward) {
     if (forward && this.state.song) {
       const songIndex = this.state.songs.findIndex(
         x => x.id === this.state.song.id
-      );
+      )
 
-      const nextSong = this.state.songs[songIndex + 1];
+      const nextSong = this.state.songs[songIndex + 1]
 
-      if (nextSong) this._selectSong(nextSong.id);
+      if (nextSong) this._selectSong(nextSong.id)
     }
   }
 
   _loadNewPlaybackInstance(playing) {
     if (this.playbackInstance) {
-      this.playbackInstance.unloadAsync();
-      this.playbackInstance.setOnPlaybackStatusUpdate(null);
-      this.playbackInstance = null;
+      this.playbackInstance.unloadAsync()
+      this.playbackInstance.setOnPlaybackStatusUpdate(null)
+      this.playbackInstance = null
     }
-    const source = { uri: this.state.song.source };
+    const source = { uri: this.state.song.source }
     const initialStatus = {
       shouldPlay: playing,
       rate: this.state.rate,
@@ -121,26 +120,26 @@ class Playlist extends Component {
       isMuted: this.state.muted,
       isLooping: false,
       isLoading: true
-    };
+    }
 
     Audio.Sound.create(
       source,
       initialStatus,
       this._onPlaybackStatusUpdate
     ).then(({ sound, status }) => {
-      this.playbackInstance = sound;
-      this.playbackInstance.playAsync();
-    });
+      this.playbackInstance = sound
+      this.playbackInstance.playAsync()
+    })
   }
 
   _selectSong(id) {
-    const songIndex = this.state.songs.findIndex(x => x.id === id);
-    const actualSong = this.state.songs[songIndex];
+    const songIndex = this.state.songs.findIndex(x => x.id === id)
+    const actualSong = this.state.songs[songIndex]
 
-    if (actualSong.isPlaying) return;
+    if (actualSong.isPlaying) return
 
-    this._onSongPressed();
-    const song = { ...actualSong, isPlaying: !actualSong.isPlaying };
+    this._onSongPressed()
+    const song = { ...actualSong, isPlaying: !actualSong.isPlaying }
     this.setState({
       song,
       songs: [
@@ -151,7 +150,7 @@ class Playlist extends Component {
               : { ...actualSong, isPlaying: false }
         )
       ]
-    });
+    })
   }
 
   componentDidMount() {
@@ -161,8 +160,8 @@ class Playlist extends Component {
       playsInSilentModeIOS: true,
       shouldDuckAndroid: true,
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
-    });
-    this._loadNewPlaybackInstance(true);
+    })
+    this._loadNewPlaybackInstance(true)
   }
 
   render() {
@@ -183,7 +182,7 @@ class Playlist extends Component {
           onSelect={id => this._selectSong(id)}
         />
       </View>
-    );
+    )
   }
 }
 
@@ -191,6 +190,6 @@ const styles = {
   container: {
     flex: 1
   }
-};
+}
 
-export default Playlist;
+export default Playlist
