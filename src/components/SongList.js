@@ -29,24 +29,11 @@ const SongListCard = ({
   isPlaying,
   onSelect
 }) => (
-  <TouchableOpacity
-    onPress={() => {
-      onSelect(id)
-    }}
-  >
-    <View style={[styles.card, { height: 80 }]}>
-      <Image source={image} style={{ width: 60, height: 60 }}>
+  <TouchableOpacity onPress={() => onSelect(id)}>
+    <View style={styles.card}>
+      <Image source={image} style={styles.cardImage}>
         {isPlaying && (
-          <View
-            style={[
-              styles.cardControlsButton,
-              {
-                backgroundColor: theme.secondaryColor,
-                opacity: 0.88,
-                margin: 10
-              }
-            ]}
-          >
+          <View style={styles.cardControlsButton}>
             <Image
               source={images.play}
               style={{ opacity: isPlaying ? 0.81 : 1 }}
@@ -58,7 +45,7 @@ const SongListCard = ({
         <Text style={styles.cardTitle}>{title}</Text>
         <Text style={styles.cardSubtitle}>{subtitle}</Text>
       </View>
-      <View style={{ justifyContent: 'center' }}>
+      <View style={styles.centerContent}>
         <Text style={styles.cardSubtitle}>{duration}</Text>
       </View>
     </View>
@@ -84,7 +71,12 @@ const styles = {
   card: {
     flex: 3,
     flexDirection: 'row',
-    padding: 10
+    padding: 10,
+    height: 80
+  },
+  cardImage: {
+    width: 60,
+    height: 60
   },
   cardInfo: {
     flex: 1,
@@ -96,7 +88,10 @@ const styles = {
     height: 40,
     borderRadius: 20,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: theme.secondaryColor,
+    opacity: 0.88,
+    margin: 10
   },
   cardTitle: {
     color: theme.primaryTextColor,
@@ -105,6 +100,9 @@ const styles = {
   cardSubtitle: {
     color: theme.secondaryTextColor,
     fontSize: 14
+  },
+  centerContent: {
+    justifyContent: 'center'
   }
 }
 

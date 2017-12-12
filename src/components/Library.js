@@ -8,13 +8,16 @@ import { keyExtractor } from '../utils'
 
 const Library = () => (
   <View style={styles.container}>
-    <Section title="POPULAR" source={popularList} />
-    <Section title="MY PLAYLIST" source={myPlaylist} />
-    <Section title="NEW RELEASES" source={[].concat(popularList).reverse()} />
+    <LibrarySection title="POPULAR" source={popularList} />
+    <LibrarySection title="MY PLAYLIST" source={myPlaylist} />
+    <LibrarySection
+      title="NEW RELEASES"
+      source={[].concat(popularList).reverse()}
+    />
   </View>
 )
 
-const Section = ({ title, source }) => (
+const LibrarySection = ({ title, source }) => (
   <View style={styles.sectionContainer}>
     <Text style={styles.sectionTitle}>{title}</Text>
     <FlatList
@@ -23,7 +26,7 @@ const Section = ({ title, source }) => (
       data={source}
       keyExtractor={keyExtractor}
       renderItem={({ item }) => (
-        <Card
+        <LibraryCard
           id={item.id}
           image={item.image}
           title={item.title}
@@ -34,17 +37,15 @@ const Section = ({ title, source }) => (
   </View>
 )
 
-Section.propTypes = {
+LibrarySection.propTypes = {
   title: PropTypes.string,
   source: PropTypes.string
 }
 
-const Card = ({ id, image, title, subtitle }) => (
+const LibraryCard = ({ id, image, title, subtitle }) => (
   <TouchableOpacity
     style={styles.card}
-    onPress={() => {
-      Actions.playlist({ id, title })
-    }}
+    onPress={() => Actions.playlist({ id, title })}
   >
     <View>
       <Image source={image} />
@@ -54,7 +55,7 @@ const Card = ({ id, image, title, subtitle }) => (
   </TouchableOpacity>
 )
 
-Card.propTypes = {
+LibraryCard.propTypes = {
   id: PropTypes.number,
   image: PropTypes.object,
   title: PropTypes.string,

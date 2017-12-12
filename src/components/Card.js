@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   ActivityIndicator
 } from 'react-native'
+import PropTypes from 'prop-types'
 import theme from '../theme'
 import images from '../images'
-import PropTypes from 'prop-types'
 
 const Card = ({
   id,
@@ -70,7 +70,9 @@ const CardControlButton = ({ image, accent, onPress }) => (
     <View
       style={[
         styles.cardControlsButton,
-        { backgroundColor: accent ? theme.secondaryColor : theme.primaryColor }
+        {
+          backgroundColor: accent ? theme.secondaryColor : theme.primaryColor
+        }
       ]}
     >
       <Image source={image} />

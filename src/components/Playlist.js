@@ -1,30 +1,22 @@
 import React, { Component } from 'react'
 import { View } from 'react-native'
 import { Audio } from 'expo'
-import { playlist } from '../data'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import Player from '../components/Player'
 import SongList from '../components/SongList'
-
-const LOOPING_TYPE_ALL = 0
-const LOOPING_TYPE_ONE = 1
+import {
+  shufflePlaylist,
+  nextPlaylistSong,
+  favouritePlaylistSong,
+  selectPlaylistSong,
+  playPausePlaylistSong,
+  playbackStatusUpdate
+} from '../actions'
 
 class Playlist extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      song: playlist[0],
-      songs: playlist,
-      playbackInstancePosition: null,
-      playbackInstanceDuration: null,
-      shouldPlay: false,
-      isPlaying: false,
-      isBuffering: false,
-      isLoading: true,
-      volume: 1.0,
-      rate: 1.0,
-      loopingType: LOOPING_TYPE_ALL,
-      shouldCorrectPitch: true
-    }
   }
 
   componentWillUnmount() {
@@ -33,42 +25,28 @@ class Playlist extends Component {
     }
   }
 
-  _changeFavoritedState(id) {
-    const songIndex = this.state.songs.findIndex(x => x.id === id)
-    const actualSong = this.state.songs[songIndex]
-    const song = { ...actualSong, favorited: !actualSong.favorited }
-
-    this.setState({
-      song,
-      songs: [
-        ...this.state.songs.map(
-          actualSong => (actualSong.id === song.id ? song : actualSong)
-        )
-      ]
-    })
-  }
-
-  _onPlayPausePressed(id) {
+  onPlayPausePressed(id) {
     if (this.playbackInstance != null) {
-      if (this.state.isPlaying) {
+      if (this.props.isPlaying) {
         this.playbackInstance.pauseAsync()
       } else {
         this.playbackInstance.playAsync()
       }
-      this.setState({ isPlaying: !this.state.isPlaying })
+
+      this.props.playPausePlaylistSong()
     }
   }
 
-  _onSongPressed() {
+  onSongPressed(id) {
     if (this.playbackInstance != null) {
-      this.setState({ isLoading: true })
-      this._loadNewPlaybackInstance(this.state.shouldPlay)
+      this.props.selectPlaylistSong(id)
+      this.loadNewPlaybackInstance(this.props.shouldPlay)
     }
   }
 
-  _onPlaybackStatusUpdate(status) {
+  onPlaybackStatusUpdate(status) {
     if (status.isLoaded) {
-      this.setState({
+      playbackStatusUpdate({
         playbackInstancePosition: status.positionMillis,
         playbackInstanceDuration: status.durationMillis,
         shouldPlay: status.shouldPlay,
@@ -77,13 +55,13 @@ class Playlist extends Component {
         rate: status.rate,
         muted: status.isMuted,
         volume: status.volume,
-        loopingType: status.isLooping ? LOOPING_TYPE_ONE : LOOPING_TYPE_ALL,
+        loopingType: status.isLooping ? 1 : 0,
         shouldCorrectPitch: status.shouldCorrectPitch,
         isLoading: status.positionMillis <= 0
       })
       if (status.didJustFinish && !status.isLooping) {
-        this._advanceIndex(true)
-        this._updatePlaybackInstanceForIndex(true)
+        this.props.nextPlaylistSong()
+        this.updatePlaybackInstanceForIndex(true)
       }
     } else {
       if (status.error) {
@@ -93,64 +71,29 @@ class Playlist extends Component {
     }
   }
 
-  _advanceIndex(forward) {
-    if (forward && this.state.song) {
-      const songIndex = this.state.songs.findIndex(
-        x => x.id === this.state.song.id
-      )
-
-      const nextSong = this.state.songs[songIndex + 1]
-
-      if (nextSong) this._selectSong(nextSong.id)
-    }
-  }
-
-  _loadNewPlaybackInstance(playing) {
+  loadNewPlaybackInstance(playing) {
     if (this.playbackInstance) {
       this.playbackInstance.unloadAsync()
       this.playbackInstance.setOnPlaybackStatusUpdate(null)
       this.playbackInstance = null
     }
-    const source = { uri: this.state.song.source }
+    const source = { uri: this.props.song.source }
     const initialStatus = {
       shouldPlay: playing,
-      rate: this.state.rate,
-      shouldCorrectPitch: this.state.shouldCorrectPitch,
-      volume: this.state.volume,
-      isMuted: this.state.muted,
+      rate: this.props.rate,
+      shouldCorrectPitch: this.props.shouldCorrectPitch,
+      volume: this.props.volume,
+      isMuted: this.props.muted,
       isLooping: false,
       isLoading: true
     }
 
-    Audio.Sound.create(
-      source,
-      initialStatus,
-      this._onPlaybackStatusUpdate
-    ).then(({ sound, status }) => {
-      this.playbackInstance = sound
-      this.playbackInstance.playAsync()
-    })
-  }
-
-  _selectSong(id) {
-    const songIndex = this.state.songs.findIndex(x => x.id === id)
-    const actualSong = this.state.songs[songIndex]
-
-    if (actualSong.isPlaying) return
-
-    this._onSongPressed()
-    const song = { ...actualSong, isPlaying: !actualSong.isPlaying }
-    this.setState({
-      song,
-      songs: [
-        ...this.state.songs.map(
-          actualSong =>
-            actualSong.id === song.id
-              ? song
-              : { ...actualSong, isPlaying: false }
-        )
-      ]
-    })
+    Audio.Sound.create(source, initialStatus, this.onPlaybackStatusUpdate).then(
+      ({ sound, status }) => {
+        this.playbackInstance = sound
+        this.playbackInstance.playAsync()
+      }
+    )
   }
 
   componentDidMount() {
@@ -161,29 +104,50 @@ class Playlist extends Component {
       shouldDuckAndroid: true,
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
     })
-    this._loadNewPlaybackInstance(true)
+    this.loadNewPlaybackInstance(true)
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Player
-          song={this.state.song}
-          isPlaying={this.state.isPlaying}
-          isLoading={this.state.isLoading}
-          position={this.state.playbackInstancePosition}
-          duration={this.state.playbackInstanceDuration}
-          onPressFavorite={id => this._changeFavoritedState(id)}
-          onPressPlayPause={id => this._onPlayPausePressed(id)}
-          onPressNext={id => this._advanceIndex(id)}
+          song={this.props.song}
+          isPlaying={this.props.isPlaying}
+          isLoading={this.props.isLoading}
+          position={this.props.playbackInstancePosition}
+          duration={this.props.playbackInstanceDuration}
+          onPressFavorite={id => this.props.favouritePlaylistSong(id)}
+          onPressNext={() => this.props.nextPlaylistSong()}
+          onPressPlayPause={id => this.onPlayPausePressed(id)}
         />
         <SongList
-          songs={this.state.songs}
-          onSelect={id => this._selectSong(id)}
+          songs={this.props.songs}
+          onSelect={id => this.onSongPressed(id)}
         />
       </View>
     )
   }
+}
+
+Playlist.propTypes = {
+  song: PropTypes.object,
+  songs: PropTypes.array,
+  playbackInstancePosition: PropTypes.number,
+  playbackInstanceDuration: PropTypes.number,
+  shouldPlay: PropTypes.bool,
+  isPlaying: PropTypes.bool,
+  isBuffering: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  volume: PropTypes.number,
+  rate: PropTypes.number,
+  loopingType: PropTypes.number,
+  shouldCorrectPitch: PropTypes.bool,
+  shufflePlaylist: PropTypes.func,
+  nextPlaylistSong: PropTypes.func,
+  favouritePlaylistSong: PropTypes.func,
+  selectPlaylistSong: PropTypes.func,
+  playPausePlaylistSong: PropTypes.func,
+  playbackStatusUpdate: PropTypes.func
 }
 
 const styles = {
@@ -192,4 +156,30 @@ const styles = {
   }
 }
 
-export default Playlist
+const mapStateToProps = ({ player }) => {
+  return ({
+    song,
+    songs,
+    playbackInstancePosition,
+    playbackInstanceDuration,
+    shouldPlay,
+    isPlaying,
+    isBuffering,
+    isLoading,
+    volume,
+    rate,
+    loopingType,
+    shouldCorrectPitch
+  } = Player)
+}
+
+const mapDispatchToProps = {
+  shufflePlaylist,
+  nextPlaylistSong,
+  favouritePlaylistSong,
+  selectPlaylistSong,
+  playPausePlaylistSong,
+  playbackStatusUpdate
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Playlist)
