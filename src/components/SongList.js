@@ -10,7 +10,9 @@ const SongList = ({ songs, onSelect }) => (
     <FlatList
       data={songs}
       keyExtractor={keyExtractor}
-      renderItem={({ item }) => <SongListCard {...item} onSelect={onSelect} />}
+      renderItem={({ item }) => {
+        return <SongListCard {...item} onSelect={onSelect} />
+      }}
     />
   </View>
 )
@@ -54,7 +56,7 @@ const SongListCard = ({
 
 SongListCard.propTypes = {
   id: PropTypes.number,
-  image: PropTypes.object,
+  image: PropTypes.number,
   title: PropTypes.string,
   subtitle: PropTypes.string,
   duration: PropTypes.string,

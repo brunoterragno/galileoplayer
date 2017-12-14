@@ -59,7 +59,7 @@ Player.propTypes = {
   song: PropTypes.object,
   isPlaying: PropTypes.bool,
   isLoading: PropTypes.bool,
-  duration: PropTypes.string,
+  duration: PropTypes.number,
   position: PropTypes.number,
   onPressFavorite: PropTypes.func,
   onPressPlayPause: PropTypes.func,

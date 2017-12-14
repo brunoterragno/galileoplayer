@@ -15,10 +15,6 @@ import {
 } from '../actions'
 
 class Playlist extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   componentWillUnmount() {
     if (this.playbackInstance != null) {
       this.playbackInstance.stopAsync()
@@ -46,22 +42,21 @@ class Playlist extends Component {
 
   onPlaybackStatusUpdate(status) {
     if (status.isLoaded) {
-      playbackStatusUpdate({
+      this.props.playbackStatusUpdate({
         playbackInstancePosition: status.positionMillis,
         playbackInstanceDuration: status.durationMillis,
         shouldPlay: status.shouldPlay,
         isPlaying: status.isPlaying,
+        isLoading: status.positionMillis <= 0,
         isBuffering: status.isBuffering,
         rate: status.rate,
         muted: status.isMuted,
         volume: status.volume,
         loopingType: status.isLooping ? 1 : 0,
-        shouldCorrectPitch: status.shouldCorrectPitch,
-        isLoading: status.positionMillis <= 0
+        shouldCorrectPitch: status.shouldCorrectPitch
       })
       if (status.didJustFinish && !status.isLooping) {
         this.props.nextPlaylistSong()
-        this.updatePlaybackInstanceForIndex(true)
       }
     } else {
       if (status.error) {
@@ -77,23 +72,27 @@ class Playlist extends Component {
       this.playbackInstance.setOnPlaybackStatusUpdate(null)
       this.playbackInstance = null
     }
-    const source = { uri: this.props.song.source }
-    const initialStatus = {
-      shouldPlay: playing,
-      rate: this.props.rate,
-      shouldCorrectPitch: this.props.shouldCorrectPitch,
-      volume: this.props.volume,
-      isMuted: this.props.muted,
-      isLooping: false,
-      isLoading: true
-    }
+    if (this.props.song) {
+      const source = { uri: this.props.song.source }
+      const initialStatus = {
+        shouldPlay: playing,
+        rate: this.props.rate,
+        shouldCorrectPitch: this.props.shouldCorrectPitch,
+        volume: this.props.volume,
+        isMuted: this.props.muted,
+        isLooping: false,
+        isLoading: true
+      }
 
-    Audio.Sound.create(source, initialStatus, this.onPlaybackStatusUpdate).then(
-      ({ sound, status }) => {
+      Audio.Sound.create(
+        source,
+        initialStatus,
+        this.onPlaybackStatusUpdate.bind(this)
+      ).then(({ sound, status }) => {
         this.playbackInstance = sound
         this.playbackInstance.playAsync()
-      }
-    )
+      })
+    }
   }
 
   componentDidMount() {
@@ -157,7 +156,7 @@ const styles = {
 }
 
 const mapStateToProps = ({ player }) => {
-  return ({
+  const {
     song,
     songs,
     playbackInstancePosition,
@@ -170,7 +169,22 @@ const mapStateToProps = ({ player }) => {
     rate,
     loopingType,
     shouldCorrectPitch
-  } = Player)
+  } = player
+
+  return {
+    song,
+    songs,
+    playbackInstancePosition,
+    playbackInstanceDuration,
+    shouldPlay,
+    isPlaying,
+    isBuffering,
+    isLoading,
+    volume,
+    rate,
+    loopingType,
+    shouldCorrectPitch
+  }
 }
 
 const mapDispatchToProps = {

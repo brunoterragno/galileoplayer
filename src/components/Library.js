@@ -1,23 +1,54 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import theme from '../theme'
-import { popularList, myPlaylist } from '../data'
 import { keyExtractor } from '../utils'
+import { fetchPlaylists, selectPlaylist } from '../actions'
 
-const Library = () => (
-  <View style={styles.container}>
-    <LibrarySection title="POPULAR" source={popularList} />
-    <LibrarySection title="MY PLAYLIST" source={myPlaylist} />
-    <LibrarySection
-      title="NEW RELEASES"
-      source={[].concat(popularList).reverse()}
-    />
-  </View>
-)
+class Library extends Component {
+  componentDidMount() {
+    this.props.fetchPlaylists()
+  }
 
-const LibrarySection = ({ title, source }) => (
+  onPress(id, title) {
+    this.props.selectPlaylist(id, title)
+    Actions.playlist({ id, title })
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <LibrarySection
+          title="POPULAR"
+          source={this.props.popularPlaylists}
+          onPressCard={(id, title) => this.onPress(id, title)}
+        />
+        <LibrarySection
+          title="MY PLAYLIST"
+          source={this.props.myPlaylist}
+          onPressCard={(id, title) => this.onPress(id, title)}
+        />
+        <LibrarySection
+          title="NEW RELEASES"
+          source={this.props.popularPlaylists}
+          onPressCard={(id, title) => this.onPress(id, title)}
+        />
+      </View>
+    )
+  }
+}
+
+Library.propTypes = {
+  isLoading: PropTypes.bool,
+  popularPlaylists: PropTypes.array,
+  myPlaylist: PropTypes.array,
+  fetchPlaylists: PropTypes.func,
+  selectPlaylist: PropTypes.func
+}
+
+const LibrarySection = ({ title, source, onPressCard }) => (
   <View style={styles.sectionContainer}>
     <Text style={styles.sectionTitle}>{title}</Text>
     <FlatList
@@ -31,6 +62,7 @@ const LibrarySection = ({ title, source }) => (
           image={item.image}
           title={item.title}
           subtitle={item.subtitle}
+          onPress={onPressCard}
         />
       )}
     />
@@ -39,14 +71,12 @@ const LibrarySection = ({ title, source }) => (
 
 LibrarySection.propTypes = {
   title: PropTypes.string,
-  source: PropTypes.string
+  source: PropTypes.array,
+  onPressCard: PropTypes.func
 }
 
-const LibraryCard = ({ id, image, title, subtitle }) => (
-  <TouchableOpacity
-    style={styles.card}
-    onPress={() => Actions.playlist({ id, title })}
-  >
+const LibraryCard = ({ id, image, title, subtitle, onPress }) => (
+  <TouchableOpacity style={styles.card} onPress={() => onPress(id, title)}>
     <View>
       <Image source={image} />
       <Text style={styles.cardTitle}>{title}</Text>
@@ -57,9 +87,10 @@ const LibraryCard = ({ id, image, title, subtitle }) => (
 
 LibraryCard.propTypes = {
   id: PropTypes.number,
-  image: PropTypes.object,
+  image: PropTypes.number,
   title: PropTypes.string,
-  subtitle: PropTypes.string
+  subtitle: PropTypes.string,
+  onPress: PropTypes.func
 }
 
 const styles = {
@@ -95,4 +126,14 @@ const styles = {
   }
 }
 
-export default Library
+const mapStateToProps = ({ playlists }) => {
+  const { isLoading, popularPlaylists, myPlaylist } = playlists
+  return { isLoading, popularPlaylists, myPlaylist }
+}
+
+const mapDispatchToProps = {
+  fetchPlaylists,
+  selectPlaylist
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Library)

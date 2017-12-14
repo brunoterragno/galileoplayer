@@ -54,7 +54,7 @@ const Card = ({
 
 Card.propTypes = {
   id: PropTypes.number,
-  image: PropTypes.object,
+  image: PropTypes.number,
   title: PropTypes.string,
   subtitle: PropTypes.string,
   favorited: PropTypes.bool,
@@ -81,7 +81,7 @@ const CardControlButton = ({ image, accent, onPress }) => (
 )
 
 CardControlButton.propTypes = {
-  image: PropTypes.object,
+  image: PropTypes.number,
   accent: PropTypes.bool,
   onPress: PropTypes.func
 }
