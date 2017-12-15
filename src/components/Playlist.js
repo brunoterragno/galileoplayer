@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View } from 'react-native'
-import { Audio } from 'expo'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Player from '../components/Player'
@@ -15,97 +14,6 @@ import {
 } from '../actions'
 
 class Playlist extends Component {
-  componentWillUnmount() {
-    if (this.playbackInstance != null) {
-      this.playbackInstance.stopAsync()
-    }
-  }
-
-  onPlayPausePressed(id) {
-    if (this.playbackInstance != null) {
-      if (this.props.isPlaying) {
-        this.playbackInstance.pauseAsync()
-      } else {
-        this.playbackInstance.playAsync()
-      }
-
-      this.props.playPausePlaylistSong()
-    }
-  }
-
-  onSongPressed(id) {
-    if (this.playbackInstance != null) {
-      this.props.selectPlaylistSong(id)
-      this.loadNewPlaybackInstance(this.props.shouldPlay)
-    }
-  }
-
-  onPlaybackStatusUpdate(status) {
-    if (status.isLoaded) {
-      this.props.playbackStatusUpdate({
-        playbackInstancePosition: status.positionMillis,
-        playbackInstanceDuration: status.durationMillis,
-        shouldPlay: status.shouldPlay,
-        isPlaying: status.isPlaying,
-        isLoading: status.positionMillis <= 0,
-        isBuffering: status.isBuffering,
-        rate: status.rate,
-        muted: status.isMuted,
-        volume: status.volume,
-        loopingType: status.isLooping ? 1 : 0,
-        shouldCorrectPitch: status.shouldCorrectPitch
-      })
-      if (status.didJustFinish && !status.isLooping) {
-        this.props.nextPlaylistSong()
-      }
-    } else {
-      if (status.error) {
-        /* eslint-disable */
-        console.log(`FATAL PLAYER ERROR: ${status.error}`)
-      }
-    }
-  }
-
-  loadNewPlaybackInstance(playing) {
-    if (this.playbackInstance) {
-      this.playbackInstance.unloadAsync()
-      this.playbackInstance.setOnPlaybackStatusUpdate(null)
-      this.playbackInstance = null
-    }
-    if (this.props.song) {
-      const source = { uri: this.props.song.source }
-      const initialStatus = {
-        shouldPlay: playing,
-        rate: this.props.rate,
-        shouldCorrectPitch: this.props.shouldCorrectPitch,
-        volume: this.props.volume,
-        isMuted: this.props.muted,
-        isLooping: false,
-        isLoading: true
-      }
-
-      Audio.Sound.create(
-        source,
-        initialStatus,
-        this.onPlaybackStatusUpdate.bind(this)
-      ).then(({ sound, status }) => {
-        this.playbackInstance = sound
-        this.playbackInstance.playAsync()
-      })
-    }
-  }
-
-  componentDidMount() {
-    Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
-      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
-    })
-    this.loadNewPlaybackInstance(true)
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -115,13 +23,14 @@ class Playlist extends Component {
           isLoading={this.props.isLoading}
           position={this.props.playbackInstancePosition}
           duration={this.props.playbackInstanceDuration}
-          onPressFavorite={id => this.props.favouritePlaylistSong(id)}
+          onPlaybackStatusUpdate={this.props.playbackStatusUpdate}
           onPressNext={() => this.props.nextPlaylistSong()}
-          onPressPlayPause={id => this.onPlayPausePressed(id)}
+          onPressFavorite={id => this.props.favouritePlaylistSong(id)}
+          onPressPlayPause={id => this.props.playPausePlaylistSong(id)}
         />
         <SongList
           songs={this.props.songs}
-          onSelect={id => this.onSongPressed(id)}
+          onSelect={id => this.props.selectPlaylistSong(id)}
         />
       </View>
     )
