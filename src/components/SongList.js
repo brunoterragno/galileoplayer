@@ -5,7 +5,7 @@ import theme from '../theme'
 import images from '../images'
 import { keyExtractor } from '../utils'
 
-const SongList = ({ songs, onSelect }) => (
+const SongList = ({ songs, song, onSelect }) => (
   <View style={styles.songListContainer}>
     <FlatList
       data={songs}
@@ -13,12 +13,14 @@ const SongList = ({ songs, onSelect }) => (
       renderItem={({ item }) => {
         return <SongListCard {...item} onSelect={onSelect} />
       }}
+      extraData={song}
     />
   </View>
 )
 
 SongList.propTypes = {
   songs: PropTypes.array,
+  song: PropTypes.object,
   onSelect: PropTypes.func
 }
 

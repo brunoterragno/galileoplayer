@@ -127,6 +127,7 @@ class Player extends Component {
           onPressFavorite={this.props.onPressFavorite}
           onPressPlayPause={() => this.onPlayPausePressed()}
           onPressNext={this.props.onPressNext}
+          onPressShuffle={this.props.onPressShuffle}
         />
         <View style={styles.cardSongStatusBar}>
           <Text style={styles.cardSongStatusBarText}>
@@ -159,7 +160,8 @@ Player.propTypes = {
   onPlaybackStatusUpdate: PropTypes.func,
   onPressFavorite: PropTypes.func,
   onPressPlayPause: PropTypes.func,
-  onPressNext: PropTypes.func
+  onPressNext: PropTypes.func,
+  onPressShuffle: PropTypes.func
 }
 
 const styles = {

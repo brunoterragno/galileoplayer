@@ -76,7 +76,10 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case SHUFFLE_PLAYLIST_SONGS: {
-      return state
+      const songs = state.songs.sort(() => Math.random() - 0.5)
+      const song = songs[0]
+
+      return { ...state, songs, song }
     }
     case PLAYBACK_STATUS_UPDATE: {
       return { ...state, ...action.payload }

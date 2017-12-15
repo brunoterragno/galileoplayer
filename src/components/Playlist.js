@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import Player from '../components/Player'
 import SongList from '../components/SongList'
 import {
-  shufflePlaylist,
+  shufflePlaylistSongs,
   nextPlaylistSong,
   favouritePlaylistSong,
   selectPlaylistSong,
@@ -24,12 +24,14 @@ class Playlist extends Component {
           position={this.props.playbackInstancePosition}
           duration={this.props.playbackInstanceDuration}
           onPlaybackStatusUpdate={this.props.playbackStatusUpdate}
+          onPressShuffle={() => this.props.shufflePlaylistSongs()}
           onPressNext={() => this.props.nextPlaylistSong()}
           onPressFavorite={id => this.props.favouritePlaylistSong(id)}
           onPressPlayPause={id => this.props.playPausePlaylistSong(id)}
         />
         <SongList
           songs={this.props.songs}
+          song={this.props.song}
           onSelect={id => this.props.selectPlaylistSong(id)}
         />
       </View>
@@ -50,7 +52,7 @@ Playlist.propTypes = {
   rate: PropTypes.number,
   loopingType: PropTypes.number,
   shouldCorrectPitch: PropTypes.bool,
-  shufflePlaylist: PropTypes.func,
+  shufflePlaylistSongs: PropTypes.func,
   nextPlaylistSong: PropTypes.func,
   favouritePlaylistSong: PropTypes.func,
   selectPlaylistSong: PropTypes.func,
@@ -97,7 +99,7 @@ const mapStateToProps = ({ player }) => {
 }
 
 const mapDispatchToProps = {
-  shufflePlaylist,
+  shufflePlaylistSongs,
   nextPlaylistSong,
   favouritePlaylistSong,
   selectPlaylistSong,

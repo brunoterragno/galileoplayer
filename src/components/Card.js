@@ -20,7 +20,8 @@ const Card = ({
   isLoading,
   onPressFavorite,
   onPressPlayPause,
-  onPressNext
+  onPressNext,
+  onPressShuffle
 }) => (
   <View style={styles.card}>
     <Image source={image} />
@@ -28,7 +29,12 @@ const Card = ({
       <Text style={styles.cardTitle}>{title}</Text>
       <Text style={styles.cardSubtitle}>{subtitle}</Text>
       <View style={styles.cardControls}>
-        <CardControlButton image={images.shuffle} onPress={() => {}} />
+        <CardControlButton
+          image={images.shuffle}
+          onPress={() => {
+            onPressShuffle()
+          }}
+        />
         <CardControlButton image={images.repeat} onPress={() => {}} />
         <CardControlButton
           image={favorited ? images.favorited : images.favorite}
@@ -62,7 +68,8 @@ Card.propTypes = {
   isLoading: PropTypes.bool,
   onPressFavorite: PropTypes.func,
   onPressPlayPause: PropTypes.func,
-  onPressNext: PropTypes.func
+  onPressNext: PropTypes.func,
+  onPressShuffle: PropTypes.func
 }
 
 const CardControlButton = ({ image, accent, onPress }) => (
