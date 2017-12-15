@@ -41,11 +41,19 @@ export default (state = INITIAL_STATE, action) => {
     }
     case NEXT_PLAYLIST_SONG: {
       const songIndex = findSongIndex(state.song.id)
-      const nextSong = state.songs[songIndex + 1]
+      let nextSong = state.songs[songIndex + 1]
 
-      if (nextSong) return { ...state, song: nextSong, isLoading: true }
+      if (!nextSong) nextSong = state.songs[0]
 
-      return state
+      const song = { ...nextSong, isPlaying: true }
+      const songs = getUpdatedSongs(song, { isPlaying: false })
+
+      return {
+        ...state,
+        song,
+        songs,
+        isLoading: true
+      }
     }
     case FAVOURITE_PLAYLIST_SONG: {
       const songIndex = findSongIndex(state.song.id)
