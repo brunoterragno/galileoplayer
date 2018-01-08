@@ -5,7 +5,7 @@ import {
 } from '../actions/types'
 
 const INITIAL_STATE = {
-  popularLists: [],
+  popularPlaylists: [],
   myPlaylist: [],
   isLoading: false
 }
